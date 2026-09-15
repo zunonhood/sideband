@@ -1,5 +1,5 @@
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
-const SIDEBAND_CA="0xcb1d735b84d24c8fa8c7ce6635dc56ff03e12fa1";
+const SIDEBAND_CA="";
 const SIDEBAND_X_URL="";
 const STATIC_DEMO=location.hostname.endsWith(".github.io")||new URLSearchParams(location.search).has("static-demo");
 const STATIC_STATE_KEY="sideband-pages-state-v2";
