@@ -1,0 +1,91 @@
+{
+  "identity": {
+    "handle": "sideband.id/00",
+    "account": "0x71A8demo0000000000000000000000000044C2",
+    "chainId": 4663,
+    "signer": "This iPhone",
+    "recoveryReady": true
+  },
+  "balances": {
+    "USDC": 1830.2,
+    "ETH": 0.247
+  },
+  "contacts": [
+    {
+      "id": "mira",
+      "name": "Mira Chen",
+      "handle": "mira.sideband",
+      "account": "0x99210000000000000000000000000000000002A1"
+    },
+    {
+      "id": "noah",
+      "name": "Noah Williams",
+      "handle": "noah.sideband",
+      "account": "0x88210000000000000000000000000000000001B2"
+    },
+    {
+      "id": "kernel",
+      "name": "Kernel Studio",
+      "handle": "kernel.publisher",
+      "verified": true
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_1",
+      "contactId": "mira",
+      "direction": "in",
+      "body": "Sideband address is live. Try the payment flow.",
+      "createdAt": "2026-09-15T01:40:00.000Z"
+    },
+    {
+      "id": "msg_2",
+      "contactId": "mira",
+      "direction": "in",
+      "kind": "payment_request",
+      "amount": 12,
+      "asset": "USDC",
+      "memo": "Shared relay",
+      "createdAt": "2026-09-15T01:41:00.000Z"
+    }
+  ],
+  "policies": [
+    {
+      "id": "relay.contacts",
+      "app": "Relay",
+      "scope": "contacts:read notifications:send",
+      "active": false,
+      "expiresAt": "2026-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "market.pay",
+      "app": "Market",
+      "scope": "wallet:send",
+      "active": true,
+      "spendLimit": 50,
+      "asset": "USDC",
+      "expiresAt": "2026-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "agent.messages",
+      "app": "Agent",
+      "scope": "messages:read",
+      "active": true,
+      "expiresAt": "2026-12-31T23:59:59.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "051c6c58-b1ef-4869-bf65-97091bcb56b6",
+      "hash": "0x7cbaa6048901f99fb13c51bbfdfa3a7ece4c9f4ab390408acb864fd29b31703f",
+      "mode": "simulation",
+      "chainId": 4663,
+      "contactId": "mira",
+      "amount": 12,
+      "asset": "USDC",
+      "memo": "Shared relay",
+      "status": "confirmed",
+      "createdAt": "2026-09-15T08:26:15.993Z"
+    }
+  ]
+}

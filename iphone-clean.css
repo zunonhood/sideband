@@ -1,0 +1,2 @@
+.device-content{grid-template-columns:1fr;background:#070807}.phone{width:232px;height:464px}.device-data{display:none}
+@media(max-height:820px) and (min-width:761px){.phone{scale:.86}}@media(max-width:1050px){.device-content{grid-template-columns:1fr}.phone{scale:.9}}@media(max-width:760px){.phone{scale:1}}

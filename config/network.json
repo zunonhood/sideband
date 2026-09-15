@@ -1,0 +1,9 @@
+{
+  "name": "Robinhood Chain",
+  "chainId": 4663,
+  "currency": "ETH",
+  "rpcUrl": "https://rpc.mainnet.chain.robinhood.com",
+  "explorerUrl": "https://robinhoodchain.blockscout.com",
+  "mode": "simulation",
+  "warning": "Set mode to live only after contracts are audited and deployed."
+}
