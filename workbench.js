@@ -1,5 +1,5 @@
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
-const SIDEBAND_CA="0xddcc52b9cc11b3176acf402015e7bed751b2aa73";
+const SIDEBAND_CA="";
 const SIDEBAND_X_URL="";
 const STATIC_DEMO=location.hostname.endsWith(".github.io")||new URLSearchParams(location.search).has("static-demo");
 const STATIC_STATE_KEY="sideband-pages-state-v2";
@@ -65,7 +65,7 @@ twitterButton.id="twitterLink";twitterButton.className=SIDEBAND_X_URL?"social-li
 if(topActions)topActions.appendChild(twitterButton);
 twitterButton.onclick=()=>{if(!SIDEBAND_X_URL){notify("TWITTER LINK COMING SOON");return}window.open(SIDEBAND_X_URL,"_blank","noopener,noreferrer")};
 const caButton=q("#copyAddress");
-if(caButton){caButton.classList.toggle("ca-pending",!SIDEBAND_CA);caButton.title=SIDEBAND_CA?"Copy Sideband contract address":"Contract address will appear here after deployment";caButton.textContent=SIDEBAND_CA?`CA / ${SIDEBAND_CA.slice(0,6)}...${SIDEBAND_CA.slice(-4)}`:"CA / COMING SOON"}
+if(caButton){caButton.classList.toggle("ca-pending",!SIDEBAND_CA);caButton.title=SIDEBAND_CA?"Copy Sideband contract address":"Contract address will be announced soon";caButton.textContent=SIDEBAND_CA?`CA / ${SIDEBAND_CA.slice(0,6)}...${SIDEBAND_CA.slice(-4)}`:"CA / TBA"}
 const developerOpening=[
  "<section class='builder-story'><div class='builder-label'>A NOTE FROM THE BUILDER / 01</div><h2>I started Sideband with a simple question: why does the most personal computer we own still make us rent our identity from every app?</h2>",
  "<p>I use an iPhone every day. It already knows who I am, it already protects important keys, and it is already where my conversations, relationships and payments meet. But the moment I open a new service, I start from zero again. I create another account, accept another permission screen and trust another company to keep a piece of my digital life alive.</p>",
@@ -400,7 +400,7 @@ qa("[data-file]").forEach(b=>b.onclick=()=>{q("#readState").textContent="READING
 qa("[data-folder]").forEach(b=>b.onclick=()=>{const body=q(`[data-folder-body="${b.dataset.folder}"]`);body.classList.toggle("closed");b.querySelector("i").textContent=body.classList.contains("closed")?"▸":"▾"});
 let expanded=true;q("#expandAll").onclick=()=>{expanded=!expanded;qa("[data-folder-body]").forEach(x=>x.classList.toggle("closed",!expanded));qa("[data-folder] i").forEach(i=>i.textContent=expanded?"▾":"▸");q("#expandAll").textContent=expanded?"COLLAPSE ALL":"EXPAND ALL"};
 if(q("#copyCode"))q("#copyCode").onclick=async()=>{await navigator.clipboard.writeText(sources[activeFile].code);q("#copyCode").textContent="COPIED";setTimeout(()=>q("#copyCode").textContent="COPY",1200)};
-q("#copyAddress").onclick=async()=>{if(!SIDEBAND_CA){notify("CONTRACT ADDRESS COMING SOON");return}await navigator.clipboard.writeText(SIDEBAND_CA);q("#copyAddress").textContent="CA / COPIED";setTimeout(()=>q("#copyAddress").textContent=`CA / ${SIDEBAND_CA.slice(0,6)}...${SIDEBAND_CA.slice(-4)}`,1200)};
+q("#copyAddress").onclick=async()=>{if(!SIDEBAND_CA){notify("CONTRACT ADDRESS TBA");return}await navigator.clipboard.writeText(SIDEBAND_CA);q("#copyAddress").textContent="CA / COPIED";setTimeout(()=>q("#copyAddress").textContent=`CA / ${SIDEBAND_CA.slice(0,6)}...${SIDEBAND_CA.slice(-4)}`,1200)};
 renderFile("manifest");
 sources.readme={path:"README.md",lang:"MARKDOWN",code:`# Sideband
 
