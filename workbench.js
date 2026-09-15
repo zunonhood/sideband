@@ -1,7 +1,31 @@
 const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const SIDEBAND_CA="";
 const SIDEBAND_X_URL="";
-async function api(path,options={}){const response=await fetch(path,{...options,headers:{"Content-Type":"application/json",...(options.headers||{})}});const payload=await response.json();if(!response.ok)throw new Error(payload.error||"request failed");return payload}
+const STATIC_DEMO=location.hostname.endsWith(".github.io")||new URLSearchParams(location.search).has("static-demo");
+const STATIC_STATE_KEY="sideband-pages-state-v2";
+const STATIC_SOURCE_FILES=["README.md","package.json",".env.example","config/network.json","server.mjs","src/store.mjs","src/repository.mjs","src/core/identity.mjs","src/core/policy.mjs","src/core/message.mjs","src/core/payment.mjs","contracts/SidebandAccount.sol","contracts/IdentityRegistry.sol","contracts/PermissionPolicy.sol","ios/Sideband/SidebandApp.swift","ios/Sideband/APIClient.swift","ios/Sideband/Models.swift","ios/Sideband/LocalVault.swift","ios/Sideband/ContactService.swift","ios/Sideband/MessageService.swift","tests/core.test.mjs","workbench.html","workbench.css","workbench-right.css","workbench-polish.css","iphone-real.css","iphone-clean.css","repo-comfort.css","clarity.css","layout-final.css","repo-inline.css","logo-system.css","narrative.css","phone-os.css","phone-product.css","phone-screens.css","workbench.js","index.html"];
+let staticStatePromise;
+function staticRepositoryTree(){const root={};for(const path of STATIC_SOURCE_FILES){const parts=path.split("/");let node=root;parts.forEach((part,index)=>{if(index===parts.length-1)node[part]={type:"file",path};else{node[part]??={type:"directory",children:{}};node=node[part].children}})}return root}
+async function staticState(){if(!staticStatePromise)staticStatePromise=(async()=>{const saved=localStorage.getItem(STATIC_STATE_KEY);if(saved)return JSON.parse(saved);const response=await fetch(new URL("data/state.json",document.baseURI));if(!response.ok)throw new Error("demo state unavailable");const state=await response.json();localStorage.setItem(STATIC_STATE_KEY,JSON.stringify(state));return state})();return staticStatePromise}
+function saveStaticState(state){localStorage.setItem(STATIC_STATE_KEY,JSON.stringify(state))}
+function staticHash(){const bytes=crypto.getRandomValues(new Uint8Array(32));return "0x"+Array.from(bytes,byte=>byte.toString(16).padStart(2,"0")).join("")}
+async function staticApi(path,options={}){
+ const url=new URL(path,"https://sideband.local"),method=String(options.method||"GET").toUpperCase();
+ if(method==="GET"&&url.pathname==="/api/health")return{ok:true,version:"0.2.0",mode:"pages-demo",chainId:4663};
+ if(method==="GET"&&url.pathname==="/api/repository")return staticRepositoryTree();
+ if(method==="GET"&&url.pathname==="/api/source"){const sourcePath=url.searchParams.get("path")||"";if(!STATIC_SOURCE_FILES.includes(sourcePath))throw new Error("source file not public");const response=await fetch(new URL(sourcePath,document.baseURI));if(!response.ok)throw new Error("source file unavailable");return{path:sourcePath,source:await response.text()}}
+ const state=await staticState();
+ if(method==="GET"&&url.pathname==="/api/system")return{identity:state.identity,balances:state.balances,policies:state.policies,recentTransactions:state.transactions.slice(0,5)};
+ if(method==="GET"&&url.pathname==="/api/contacts")return state.contacts;
+ if(method==="GET"&&url.pathname==="/api/messages"){const contactId=url.searchParams.get("contactId");return contactId?state.messages.filter(message=>message.contactId===contactId):state.messages}
+ if(method==="POST"&&url.pathname==="/api/messages"){const input=JSON.parse(options.body||"{}");if(!input.contactId||!String(input.body||"").trim())throw new Error("contactId and body are required");const message={id:"msg_"+Date.now(),contactId:input.contactId,direction:"out",body:String(input.body).trim().slice(0,4000),createdAt:new Date().toISOString()};state.messages.push(message);saveStaticState(state);return message}
+ if(method==="GET"&&url.pathname==="/api/policies")return state.policies;
+ if(method==="PATCH"&&url.pathname.startsWith("/api/policies/")){const id=decodeURIComponent(url.pathname.slice("/api/policies/".length)),input=JSON.parse(options.body||"{}"),policy=state.policies.find(item=>item.id===id);if(!policy)throw new Error("policy not found");policy.active=Boolean(input.active);saveStaticState(state);return policy}
+ if(method==="GET"&&url.pathname==="/api/transactions")return state.transactions;
+ if(method==="POST"&&url.pathname==="/api/payments"){const input=JSON.parse(options.body||"{}"),amount=Number(input.amount),asset=input.asset||"USDC",policy=state.policies.find(item=>item.id==="market.pay");if(!policy?.active)throw new Error("capability revoked");if(!(amount>0)||amount>Number(policy.spendLimit||0))throw new Error("spend limit exceeded");if(Number(state.balances[asset]||0)<amount)throw new Error("insufficient balance");state.balances[asset]=Number((state.balances[asset]-amount).toFixed(6));const transaction={id:crypto.randomUUID(),hash:staticHash(),mode:"pages-demo",chainId:state.identity.chainId,contactId:input.contactId,amount,asset,memo:input.memo||"",status:"confirmed",createdAt:new Date().toISOString()};state.transactions.unshift(transaction);saveStaticState(state);return transaction}
+ throw new Error("demo route unavailable");
+}
+async function api(path,options={}){if(STATIC_DEMO)return staticApi(path,options);const response=await fetch(path,{...options,headers:{"Content-Type":"application/json",...(options.headers||{})}});const payload=await response.json();if(!response.ok)throw new Error(payload.error||"request failed");return payload}
 async function refreshSystem(){try{const state=await api("/api/system");const usdc=state.balances.USDC.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});if(q("#homeBalance"))q("#homeBalance").textContent=`$${usdc}`;if(q("#phoneUsdc"))q("#phoneUsdc").textContent=usdc;if(q("#phoneBalance"))q("#phoneBalance").textContent=`$${usdc}`}catch{notify("LOCAL SERVICE OFFLINE")}}
 const extra=document.createElement("link");extra.rel="stylesheet";extra.href="workbench-right.css";document.head.append(extra);
 const polish=document.createElement("link");polish.rel="stylesheet";polish.href="workbench-polish.css";document.head.append(polish);

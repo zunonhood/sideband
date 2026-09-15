@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { resolve, relative } from "node:path";
 
 export const repositoryFiles = [
-  "README.md", "package.json", ".env.example", "config/network.json", "sideband.png", "logo-system.css", "narrative.css", "phone-os.css", "phone-product.css", "phone-screens.css", "server.mjs",
+  "README.md", "package.json", ".env.example", ".gitignore", "index.html", ".nojekyll", "config/network.json", "sideband.png", "logo-system.css", "narrative.css", "phone-os.css", "phone-product.css", "phone-screens.css", "server.mjs",
   "src/store.mjs", "src/repository.mjs",
   "src/core/identity.mjs", "src/core/policy.mjs", "src/core/message.mjs", "src/core/payment.mjs",
   "contracts/SidebandAccount.sol", "contracts/IdentityRegistry.sol", "contracts/PermissionPolicy.sol",
